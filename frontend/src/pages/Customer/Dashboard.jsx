@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import api from '../../api/axios'
 import { emitDebug } from '../../components/debugEmit'
 import CollapsibleJSON from '../../components/CollapsibleJSON'
+import { Card } from '../../components/UiElements'
 
 export default function Dashboard(){
   const [accounts, setAccounts] = useState(null)
@@ -19,22 +20,28 @@ export default function Dashboard(){
   },[])
 
   return (
-    <div>
-      <h3 className="text-xl font-semibold mb-3">Accounts</h3>
-      <div className="space-y-4">
+    <div className="max-w-5xl mx-auto">
+      <h3 className="text-2xl font-bold mb-4">Accounts</h3>
+
+      <div className="space-y-6">
         <div>
           {accounts ? (
-            <ul className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {accounts.map(acc=> (
-                <li key={acc.id} className="p-2 bg-white border rounded flex justify-between items-center">
+                <Card key={acc.id} className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium">{acc.name || ('Account ' + acc.id)}</div>
-                    <div className="text-sm text-gray-600">Balance: {acc.balance}</div>
+                    <div className="text-sm text-gray-500">Account</div>
+                    <div className="text-xl font-semibold">{acc.name || ('Account ' + acc.id)}</div>
+                    <div className="text-xs text-gray-400 mt-1">#{acc.id}</div>
                   </div>
-                  <a className="text-blue-600" href={`/accounts/${acc.id}`}>View Account Details</a>
-                </li>
+                  <div className="text-right">
+                    <div className="text-sm text-gray-500">Balance</div>
+                    <div className="text-2xl font-bold">{acc.balance}</div>
+                    <a className="text-indigo-600 text-sm mt-2 inline-block" href={`/accounts/${acc.id}`}>View details →</a>
+                  </div>
+                </Card>
               ))}
-            </ul>
+            </div>
           ) : <div className="text-sm text-gray-500">No accounts or loading...</div>}
         </div>
 
@@ -42,7 +49,9 @@ export default function Dashboard(){
 
         <div>
           <h4 className="font-semibold">Raw response</h4>
-          <CollapsibleJSON data={resp} />
+          <div className="mt-2">
+            <CollapsibleJSON data={resp} />
+          </div>
         </div>
       </div>
     </div>
@@ -56,19 +65,20 @@ function CreateAccount({ onResult }){
     try{
       const r = await api.post('/api/accounts', form)
       onResult(r.data)
-      alert('Account created')
       window.dispatchEvent(new CustomEvent('banking:debug', { detail: r.data }))
     }catch(err){ const d = err.response ? err.response.data : {error: err.message}; onResult(d); window.dispatchEvent(new CustomEvent('banking:debug', { detail: d })) }
   }
   return (
-    <form onSubmit={submit} className="space-y-2 max-w-md">
+    <form onSubmit={submit} className="space-y-3 max-w-md">
       <h4 className="font-semibold">Create Account</h4>
-      <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full border px-2 py-1" placeholder="Account name" />
-      <select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full border px-2 py-1">
+      <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200" placeholder="Account name" />
+      <select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200">
         <option value="savings">savings</option>
         <option value="current">current</option>
       </select>
-      <button className="bg-green-600 text-white px-3 py-1 rounded">Create</button>
+      <div className="flex justify-end">
+        <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg">Create</button>
+      </div>
     </form>
   )
 }

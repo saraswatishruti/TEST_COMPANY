@@ -10,9 +10,7 @@ export default function NavBar(){
   }
   const role = localStorage.getItem('role') || 'guest'
   return (
-    <nav className="nav">
-      <div className="nav-left">
-        <Link to="/">CyberBank</Link>
+    <nav className=\"nav\">\n      <div className=\"nav-left\">\n        <Link to=\"/\" className=\"flex items-center gap-3\">\n          <div className=\"w-9 h-9 rounded-lg bg-gradient-to-r from-indigo-700 to-indigo-500 flex items-center justify-center text-white font-bold\">BF</div>\n          <div>\n            <div className=\"text-lg font-semibold\">CyberBank</div>\n            <div className=\"text-xs text-gray-500\">Developer playground</div>\n          </div>\n        </Link>\n
       </div>
       <div className="nav-right">
         <Link to="/customer">Customer</Link>
